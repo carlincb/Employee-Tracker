@@ -1,11 +1,96 @@
 const inquirer = require('inquirer');
 const db = require('./db/config');
 const cTable = require('console.table');
-var figlet = require('figlet');
+const figlet = require('figlet');
 
-// First, have function that's an inquirer prompt, this will be starter function (usually called init)
+figlet.text('Employee Manager', function(err, data) {
+    if (err) {
+        console.log('Something went wrong...');
+        console.dir(err);
+        return;
+    }
+    console.log(data);
+    init();
+});
 
-// in the inquirer prompt ask user what want to do. inquirer prompt with type of list, choices array of strings, strings will be questions we want to ask user. See video for initial questions. What want to do? Add department, role, employee. View etc. 
+function init(){
+    return inquirer.prompt([
+        {
+            type: 'list',
+            name: 'mainMenu',
+            message: 'What would you like to do?',
+            choices: [
+                'View All Employees',
+                'Add Employee',
+                'Update Employee Role',
+                'View All Roles',
+                'Add Role',
+                'View All Departments',
+                'Add Department',
+                'Update Employee Managers',
+                'View Employees by Manager',
+                'View Employees by Department',
+                'Delete Department',
+                'Delete Role',
+                'Delete Employee',
+                'View Department Budget',
+                'Quit'
+            ],
+        }
+    ])
+    .then((answers) => {
+            switch (answers.mainMenu) {
+                case 'View All Employees':
+                    viewEmployees();
+                    break;
+                case 'Add Employee':
+                    addEmployee();
+                    break;
+                case 'Update Employee Role':
+                    updateEmployeeRole();
+                    break;
+                case 'View All Roles':
+                    viewAllRoles();
+                    break;
+                case 'Add Role':
+                    addRole();
+                    break;
+                case 'View All Departments':
+                    viewAllDepartments();
+                    break;
+                case 'Add Department':
+                    addDepartment();
+                    break;
+                case 'Update Employee Managers':
+                    updateEmployeeManagers();
+                    break;
+                case 'View Employees by Manager':
+                    viewEmployeesByManager();
+                    break;
+                case 'View Employees by Department':
+                    viewEmployeesByDepartment();
+                    break;
+                case 'Delete Department':
+                    deleteDepartment();
+                    break;
+                case 'Delete Role':
+                    deleteRole();
+                    break;
+                case 'Delete Employee':
+                    deleteEmployee();
+                    break;
+                case 'View Department Budget':
+                    viewDepartmentBudget();
+                    break;
+                case 'Quit':
+                    console.log('Thank you for using the Employee Tracker');
+                    break;
+                default:
+                    console.log('Error: No values match this expression.');
+                    break;
+            }
+        })
+    }
 
 // Functions that correspond to all the choices from initial inquirer prompt 
 
