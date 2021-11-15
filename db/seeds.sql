@@ -2,6 +2,7 @@ USE employees;
 
 INSERT INTO department
     (name)
+    -- Using roles as listed in mock up video
 VALUES
     ('Engineering'),
     ('Finance'),
@@ -10,6 +11,7 @@ VALUES
 
 INSERT INTO role
     (title, salary, department_id)
+    -- Using titles and salaries listed in mock up video
 VALUES
     ('Sales Lead', 100000, 1),
     ('Salesperson', 80000, 1),
@@ -22,6 +24,7 @@ VALUES
 
 INSERT INTO employee
     (first_name, last_name, role_id, manager_id)
+    -- Using sample names and roles as provided in mock up video
 VALUES
     ('John', 'Doe', 1, NULL),
     ('Mike', 'Chan', 2, 1),
