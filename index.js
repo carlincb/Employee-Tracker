@@ -1,6 +1,7 @@
 const inquirer = require('inquirer');
 const db = require('./db/config');
 const cTable = require('console.table');
+var figlet = require('figlet');
 
 // First, have function that's an inquirer prompt, this will be starter function (usually called init)
 
