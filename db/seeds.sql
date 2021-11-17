@@ -11,7 +11,7 @@ VALUES
 
 INSERT INTO role
     (title, salary, department_id)
-    -- Using titles and salaries listed in mock up video
+    -- Using titles and salaries as listed in mock up video
 VALUES
     ('Sales Lead', 100000, 1),
     ('Salesperson', 80000, 1),
