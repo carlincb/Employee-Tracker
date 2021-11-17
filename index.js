@@ -1,8 +1,9 @@
 const inquirer = require('inquirer');
 const cTable = require('console.table');
 const figlet = require('figlet');
-const mysql = require("mysql2");
+const mysql = require('mysql2');
 require('dotenv').config();
+const util = require('util');
 
 const db = mysql.createConnection(
     {
@@ -12,6 +13,9 @@ const db = mysql.createConnection(
       password: process.env.DB_PASS,
     },
 );
+
+db.connect();
+db.query = util.promisify(db.query);
 
 figlet.text(`
     Employee  
@@ -82,6 +86,7 @@ function init(){
                     break;  
                 case 'Quit':
                     console.log('Thank you for using the Employee Tracker');
+                    process.exit();
                     break;
                 default:
                     console.log('Error: No values match this expression.');
@@ -141,4 +146,46 @@ viewAllDepartments = () => {
     })
 };
 
-// initial database query to get all departments currently in database, then use inside inquirer prompt for user to choose from.
+addEmployee = async () => {
+    const data = await db.query(`SELECT role.id, role.title, department.name 
+    AS department, role.salary FROM role 
+    LEFT JOIN department on role.department_id = department.id;`)
+    const roles = data.map((role) => {
+        return {
+            name: `Role: ${role.title} in Department: ${role.department}.`,
+            value: role.id,
+        }
+    })
+    const inputData = await inquirer.prompt(
+        [
+            {
+                type: 'input',
+                name: 'firstName',
+                message: 'What is the first name of this employee?',
+            },
+            {
+                type: 'input',
+                name: 'lastName',
+                message: 'What is the last name of the employee?',
+            },
+            {
+                type: 'list',
+                name: 'roleId',
+                message: 'Select which role this employee will have?',
+                choices: roles,
+            }
+        ]
+    )
+    const manager = await db.query('SELECT manager_id FROM employee WHERE role_id = ?',[inputData.roleId]);
+
+    const newEmployee = await db.query('INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)', [inputData.firstName, inputData.lastName, inputData.roleId, manager[0].manager_id]);
+
+    init();
+}
+
+updateEmployeeRole = async () => {
+    const data = await db.query(`SELECT role.id, role.title, department.name 
+    AS department, role.salary FROM role 
+    LEFT JOIN department on role.department_id = department.id;`)
+    // dbquery for employees then inquirer prompt database query to update specific employee
+}
