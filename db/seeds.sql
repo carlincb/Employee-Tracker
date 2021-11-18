@@ -2,11 +2,11 @@ USE employees;
 
 INSERT INTO department
     (name)
-    -- Using roles as listed in mock up video
+    -- Using names as listed in mock up video
 VALUES
+    ('Sales'),
     ('Engineering'),
     ('Finance'),
-    ('Sales'),
     ('Legal');
 
 INSERT INTO role

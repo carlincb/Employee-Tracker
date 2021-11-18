@@ -74,14 +74,7 @@ node index.js
 
 Please see below for examples of this application's usage:
 
-### Screenshots of application:
-
-![1](assets/images/1.png)
-![2](assets/images/2.png)
-![3](assets/images/3.png)
-![4](assets/images/4.png)
-
-### Video of Usage:
+### Video of Usage
 
 ![5]()
 

@@ -156,10 +156,6 @@ viewAllDepartments = () => {
 // Add Employee Function
 // Practice using async functionality
 addEmployee = async () => {
-    if (err) {
-        console.log(err)
-        process.exit();
-    } else {
     const data = await db.query(`SELECT role.id, role.title, department.name 
     AS department, role.salary FROM role 
     LEFT JOIN department on role.department_id = department.id;`)
@@ -198,9 +194,8 @@ addEmployee = async () => {
     const manager = await db.query('SELECT manager_id FROM employee WHERE role_id = ?',[inputData.roleId]);
 
     const newEmployee = await db.query('INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)', [inputData.firstName, inputData.lastName, inputData.roleId, manager[0].manager_id]);
-    console.log('Your new Employee has been added!')
+    console.log('Your new employee has been added!')
     init();
-}
 };
 
 // Update Employee Role Function
@@ -345,7 +340,7 @@ addDepartment = () => {
             console.log(err);
             process.exit();
         } else {
-            console.log('New Department is Added!')
+            console.log('New department is added!')
             init();
         }
         })
