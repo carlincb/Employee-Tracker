@@ -76,7 +76,7 @@ Please see below for examples of this application's usage:
 
 ### Video of Usage
 
-![5]()
+- https://watch.screencastify.com/v/iAwJ7KpWv107OXOYVcTW
 
 ## Credits
 
