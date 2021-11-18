@@ -108,7 +108,8 @@ viewEmployees = () => {
     
    (err, results) => {
         if (err) {
-            console.log(err)
+            console.log(err);
+            process.exit();
         } else {
             console.table(results);
             init();
@@ -124,7 +125,8 @@ viewAllRoles = () => {
     
     (err, results) => {
         if (err) {
-            console.log(err)
+            console.log(err);
+            process.exit();
         } else {
             console.table(results);
             init();
@@ -139,6 +141,7 @@ viewAllDepartments = () => {
     (err, results) => {
         if (err) {
             console.log(err)
+            process.exit();
         } else {
             console.table(results);
             init();
@@ -146,10 +149,17 @@ viewAllDepartments = () => {
     })
 };
 
+// Add Employee Function
+// Practice using async functionality
 addEmployee = async () => {
+    if (err) {
+        console.log(err)
+        process.exit();
+    } else {
     const data = await db.query(`SELECT role.id, role.title, department.name 
     AS department, role.salary FROM role 
     LEFT JOIN department on role.department_id = department.id;`)
+
     const roles = data.map((role) => {
         return {
             name: `Role: ${role.title} in Department: ${role.department}.`,
@@ -169,11 +179,16 @@ addEmployee = async () => {
                 message: 'What is the last name of the employee?',
             },
             {
+                type: 'input',
+                name: 'manager',
+                message: 'What is the name of the manager?',
+            }, 
+            {
                 type: 'list',
                 name: 'roleId',
-                message: 'Select which role this employee will have?',
+                message: 'Select which role this employee will have.',
                 choices: roles,
-            }
+            } 
         ]
     )
     const manager = await db.query('SELECT manager_id FROM employee WHERE role_id = ?',[inputData.roleId]);
@@ -182,10 +197,150 @@ addEmployee = async () => {
 
     init();
 }
+};
 
-updateEmployeeRole = async () => {
-    const data = await db.query(`SELECT role.id, role.title, department.name 
-    AS department, role.salary FROM role 
-    LEFT JOIN department on role.department_id = department.id;`)
-    // dbquery for employees then inquirer prompt database query to update specific employee
-}
+// Update Employee Role Function
+updateEmployeeRole = () => {
+    db.query('SELECT * FROM employees.employee;', 
+    (err, results) => {
+    
+        const employees = [];
+        
+        results.forEach(result => employees.push (
+        {
+            name: result.first_name + ' ' + result.last_name, 
+            value: result.id
+        })
+    ); 
+
+    return inquirer.prompt([
+        {
+            type: 'list',
+            name: 'getEmployee',
+            message: 'Which employee are you updating?',
+            choices: employees
+        },
+    ])
+    
+    .then((data) => {
+
+    const employeeId = data.getEmployee;
+        
+    db.query('SELECT * FROM employees.role;', 
+        
+    (err, results) => {
+
+        const roles = [];
+
+        results.forEach(result => roles.push (
+        {
+            name: result.title, 
+            value: result.id
+        })
+        );
+    
+    return inquirer.prompt([
+        {
+            type: 'list',
+            name: 'updateRole',
+            message: "What is the employee's new role?",
+            choices: roles
+        },
+    ])
+    
+    .then((data) => {
+
+    const roleId = data.updateRole;
+
+    db.query('UPDATE employees.employee SET role_id = ? WHERE id = ?', [roleId, employeeId], 
+    
+    (err, results) => {
+        if (err){
+            console.log(err);
+            process.exit();
+        } else {
+            console.log(`Your employee's role has been updated!`)
+            init();
+            }
+        })
+    })
+    })
+    })
+    })
+};
+
+// Add Role Function
+addRole = () => {
+    db.query('SELECT * FROM employees.department;',
+    
+    (err, results) => {
+    
+    const departments = [];
+    
+    results.forEach(result => departments.push(
+        {
+            name: result.name, 
+            value: result.id
+        }
+        )
+    );
+
+    return inquirer.prompt([
+        {
+            type: "input",
+            name: "newRoleName",
+            message: "What is the name of the new role?"
+        },
+        {
+            type: "input",
+            name: "newRoleSalary",
+            message: "What is the salary of the new role?"
+        },
+        {
+            type: "list",
+            name: "newRoleDepartment",
+            message: "Which department does the new role belong to?",
+            choices: departments
+        }
+    ])
+    
+    .then((data) => {
+
+    db.query("INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)", 
+    [data.newRoleName, data.newRoleSalary, data.newRoleDepartment], 
+      
+    (err, results) => {
+        if(err){
+            console.log(err);
+            process.exit();
+        } else {
+            console.log('Role is added!');
+            init();
+        }
+        })
+    })
+    })
+};
+
+// Add Department Function
+
+addDepartment = () => {
+    return inquirer.prompt([
+        {
+            type: "input",
+            name: "newDepartmentName",
+            message: "What is the name of the new department?"
+        },
+    ])
+    .then(function (data) {
+    db.query("INSERT INTO department (name) VALUES (?)", [data.newDepartmentName], (err, results) => { 
+        
+        if(err){
+            console.log(err);
+            process.exit();
+        } else {
+            init();
+        }
+        })
+    })
+};
