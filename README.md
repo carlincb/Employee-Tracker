@@ -50,8 +50,10 @@ THEN I am prompted to select an employee to update and their new role and this i
 
 Here are some guidelines to help you get started:
 
+- Git Clone the Repo:
+
 ```
-git clone https://github.com/carlincb/Employee-Tracker
+git clone git@github.com:carlincb/Employee-Tracker.git
 ```
 
 - Create a `.gitignore` file and include `node_modules/` and `.DS_Store/` so that your `node_modules` directory isn't tracked or uploaded to GitHub. Be sure to create your `.gitignore` file before installing any npm dependencies.
